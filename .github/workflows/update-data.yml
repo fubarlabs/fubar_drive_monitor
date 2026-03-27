@@ -4,19 +4,19 @@ on:
   workflow_dispatch:
     inputs:
       donations_current:
-        description: 'Donations raised so far ($)'
-        required: true
+        description: 'Donations raised so far ($) — leave blank to keep current'
+        required: false
         type: number
       donations_goal:
-        description: 'Donations goal ($)'
+        description: 'Donations goal ($) — leave blank to keep current'
         required: false
         type: number
       members_current:
-        description: 'Current member count'
-        required: true
+        description: 'Current member count — leave blank to keep current'
+        required: false
         type: number
       members_goal:
-        description: 'Member goal'
+        description: 'Member goal — leave blank to keep current'
         required: false
         type: number
 
@@ -39,16 +39,15 @@ jobs:
           with open('data.json') as f:
               data = json.load(f)
 
-          data['donations']['current'] = int(os.environ['DONATIONS_CURRENT'])
-          data['members']['current']   = int(os.environ['MEMBERS_CURRENT'])
-
-          goal_d = os.environ.get('DONATIONS_GOAL', '').strip()
-          goal_m = os.environ.get('MEMBERS_GOAL', '').strip()
-
-          if goal_d:
-              data['donations']['goal'] = int(goal_d)
-          if goal_m:
-              data['members']['goal'] = int(goal_m)
+          for key, field in [
+              ('DONATIONS_CURRENT', ('donations', 'current')),
+              ('DONATIONS_GOAL',    ('donations', 'goal')),
+              ('MEMBERS_CURRENT',   ('members',   'current')),
+              ('MEMBERS_GOAL',      ('members',   'goal')),
+          ]:
+              val = os.environ.get(key, '').strip()
+              if val:
+                  data[field[0]][field[1]] = int(val)
 
           with open('data.json', 'w') as f:
               json.dump(data, f, indent=2)
