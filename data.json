@@ -1,12 +1,12 @@
 {
   "donations": {
-    "current": 500,
-    "goal": 15000,
+    "current": 20,
+    "goal": 1500,
     "label": "Annual Fund"
   },
   "members": {
-    "current": 5,
-    "goal": 15,
+    "current": 23,
+    "goal": 400,
     "label": "2025 Members"
   }
 }
