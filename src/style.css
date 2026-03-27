@@ -1,0 +1,265 @@
+:root {
+  --bg:         #000000;
+  --surface:    #0a0a0a;
+  --border:     #1a2a1a;
+  --dim:        #1f3a1f;
+  --muted:      #2a5a2a;
+  --text:       #ffffff;
+  --text-soft:  #019e60;
+  --gold:       #ffe602;
+  --gold-pale:  #ffe60222;
+  --teal:       #017145;
+  --teal-pale:  #01714518;
+  --flicker-on: #012a1a;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  width: 100%; height: 100%;
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  overflow: hidden;
+}
+
+body {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  grid-template-columns: 1fr 1.6fr;
+  grid-template-areas:
+    "header  header"
+    "jar     members"
+    "footer  footer";
+  gap: 0;
+  height: 100vh;
+  padding: 1.2rem 2rem 0.8rem;
+  column-gap: 2rem;
+}
+
+/* ── Header ─────────────────────────────────────────── */
+header {
+  grid-area: header;
+  display: flex;
+  justify-content: center;
+  align-items: baseline;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 0.5rem;
+  margin-bottom: 0.8rem;
+}
+
+header h1 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(1.6rem, 2.8vw, 2.6rem);
+  letter-spacing: 0.06em;
+  color: var(--text);
+  line-height: 1;
+  text-align: center;
+}
+
+header h1 span.fubar {
+  color: #ffe602;
+}
+
+header h1 span.drive {
+  color: #ffffff;
+}
+
+/* ── Jar panel ───────────────────────────────────────── */
+#jar-panel {
+  grid-area: jar;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.6rem;
+  background: #ffe602;
+  border-radius: 6px;
+  padding: 1.2rem 1.2rem 1.4rem;
+  overflow: hidden;
+  min-height: 0;
+}
+
+.panel-label {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(1.1rem, 1.8vw, 1.8rem);
+  letter-spacing: 0.14em;
+  color: #000000;
+  text-align: center;
+}
+
+#jar-svg-wrap {
+  flex: 1;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 0;
+}
+
+#jar-svg-wrap svg {
+  max-height: 100%;
+  width: auto;
+}
+
+.jar-amount {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(1.2rem, 2.2vw, 2rem);
+  color: #000000;
+  letter-spacing: 0.04em;
+  line-height: 1;
+}
+
+.jar-goal {
+  font-size: 0.85rem;
+  color: #000000;
+  letter-spacing: 0.1em;
+  text-align: center;
+  opacity: 0.6;
+}
+
+/* ── Members panel ───────────────────────────────────── */
+#members-panel {
+  grid-area: members;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  background: #017145;
+  border-radius: 6px;
+  padding: 1.2rem 1.2rem 1.4rem;
+  overflow: hidden;
+  min-height: 0;
+}
+
+#members-panel .panel-label {
+  color: #000000;
+}
+
+#member-grid {
+  flex: 1;
+  display: grid;
+  gap: 4px;
+  align-content: center;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  min-height: 0;
+  width: 100%;
+  grid-auto-rows: 1fr;
+}
+
+.member-slot {
+  aspect-ratio: 1;
+  position: relative;
+  overflow: hidden;
+  background: transparent;
+  width: 100%;
+  height: 100%;
+  max-height: min(20vw, 200px);
+  max-width: min(20vw, 200px);
+}
+
+.member-slot img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: contain;
+}
+
+/* inactive: solid black silhouette, no CSS animation — JS schedules flickers */
+.member-slot.inactive img {
+  filter: grayscale(1) brightness(0);
+}
+
+/* .flickering is added/removed by JS for a fixed ~300ms zap */
+.member-slot.flickering img {
+  animation: slot-flicker 0.75s linear forwards;
+}
+
+@keyframes slot-flicker {
+  0%   { filter: grayscale(1) brightness(0); }
+  25%  { filter: grayscale(0.4) brightness(0.45); }
+  50%  { filter: grayscale(1) brightness(0); }
+  75%  { filter: grayscale(0.5) brightness(0.38); }
+  100% { filter: grayscale(1) brightness(0); }
+}
+
+/* active: full color */
+.member-slot.active {
+  animation: none;
+}
+
+.member-slot.active img {
+  filter: none;
+  animation: none;
+}
+
+/* newly activated: brief white flash before settling */
+.member-slot.just-lit img {
+  animation: slot-burst 0.6s ease-out forwards !important;
+}
+
+@keyframes slot-burst {
+  0%   { filter: brightness(3); }
+  40%  { filter: brightness(1.3); }
+  100% { filter: none; }
+}
+
+.members-count {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(2rem, 3.5vw, 3.2rem);
+  color: #000000;
+  letter-spacing: 0.04em;
+  line-height: 1;
+}
+
+.members-goal {
+  font-size: 0.85rem;
+  color: #000000;
+  letter-spacing: 0.1em;
+  opacity: 0.6;
+}
+
+/* ── Footer ──────────────────────────────────────────── */
+footer {
+  grid-area: footer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-top: 1px solid var(--border);
+  padding-top: 0.3rem;
+  margin-top: 0.3rem;
+  gap: 2.5rem;
+}
+
+.footer-cta {
+  font-size: 0.8rem;
+  color: var(--muted);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.footer-cta span {
+  color: var(--text-soft);
+}
+
+#last-updated {
+  font-size: 0.72rem;
+  color: var(--dim);
+  letter-spacing: 0.08em;
+}
+
+/* ── Jar SVG internals ───────────────────────────────── */
+#jar-fill {
+  transition: y 1.4s cubic-bezier(0.4, 0, 0.2, 1),
+              height 1.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#jar-level-line {
+  transition: y1 1.4s cubic-bezier(0.4, 0, 0.2, 1),
+              y2 1.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#jar-amount-label {
+  transition: y 1.4s cubic-bezier(0.4, 0, 0.2, 1);
+}

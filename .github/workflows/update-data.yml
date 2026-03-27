@@ -49,7 +49,7 @@ jobs:
           ## Instructions
 
           - Only fill in the fields you want to change — blank fields keep their current value.
-          - The display at https://fubarlabs.github.io/fubar_drive_monitor/display.html
+          - The display at https://fubarlabs.github.io/fubar_drive_monitor/
             updates within 60 seconds of this workflow completing.
           - To check current values before running, look at the summary from the last run.
           """
