@@ -26,6 +26,40 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Show current values
+        run: |
+          python3 - <<'EOF'
+          import json
+
+          with open('data.json') as f:
+              data = json.load(f)
+
+          d = data['donations']
+          m = data['members']
+
+          summary = f"""## Current values (before this run)
+
+          | Field | Value |
+          |-------|-------|
+          | Donations current | ${d['current']:,} |
+          | Donations goal    | ${d['goal']:,} |
+          | Members current   | {m['current']} |
+          | Members goal      | {m['goal']} |
+
+          ## Instructions
+
+          - Only fill in the fields you want to change — blank fields keep their current value.
+          - The display at https://fubarlabs.github.io/fubar_drive_monitor/display.html
+            updates within 60 seconds of this workflow completing.
+          - To check current values before running, look at the summary from the last run.
+          """
+
+          import textwrap
+          with open('/tmp/summary.md', 'w') as f:
+              f.write(textwrap.dedent(summary))
+          EOF
+          cat /tmp/summary.md >> "$GITHUB_STEP_SUMMARY"
+
       - name: Update data.json
         env:
           DONATIONS_CURRENT: ${{ inputs.donations_current }}
@@ -38,6 +72,8 @@ jobs:
 
           with open('data.json') as f:
               data = json.load(f)
+
+          before = json.dumps(data, indent=2)
 
           for key, field in [
               ('DONATIONS_CURRENT', ('donations', 'current')),
@@ -53,8 +89,24 @@ jobs:
               json.dump(data, f, indent=2)
               f.write('\n')
 
-          print(json.dumps(data, indent=2))
+          d = data['donations']
+          m = data['members']
+
+          result = f"""## Updated values
+
+          | Field | Value |
+          |-------|-------|
+          | Donations current | ${d['current']:,} |
+          | Donations goal    | ${d['goal']:,} |
+          | Members current   | {m['current']} |
+          | Members goal      | {m['goal']} |
+          """
+
+          import textwrap
+          with open('/tmp/result.md', 'w') as f:
+              f.write(textwrap.dedent(result))
           EOF
+          cat /tmp/result.md >> "$GITHUB_STEP_SUMMARY"
 
       - name: Commit and push
         run: |
