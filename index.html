@@ -320,8 +320,7 @@
 
 <script>
   // ── Configuration ──────────────────────────────────────
-  const isLocal       = window.location.protocol === 'file:' || ['localhost', '127.0.0.1'].includes(window.location.hostname);
-  const DATA_URL      = isLocal ? 'data.json' : 'data.php';
+  const DATA_URL = 'data.json';
   const POLL_INTERVAL = 60_000; // ms
 
   // Expected flickers per second across the ENTIRE grid of inactive slots.
